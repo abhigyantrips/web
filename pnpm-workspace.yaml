@@ -1,5 +1,6 @@
 packages:
   - "apps/*"
+  - "packages/*"
 
 # Shared framework versions; apps declare their own dependencies with catalog:.
 catalog:

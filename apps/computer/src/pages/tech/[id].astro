@@ -1,4 +1,5 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import PageLayout from "@/layouts/page-layout.astro";
 import { getCollection } from "astro:content";
 
@@ -19,7 +20,7 @@ function hasReference(refs: { collection: string; id: string }[] | undefined, id
 
 const posts = await getCollection(
 	"things",
-	({ data }) => data.published && hasReference(data.tech, tag.id)
+	(entry) => isPublished(entry) && hasReference(entry.data.tech, tag.id)
 );
 const links = await getCollection("links", ({ data }) => hasReference(data.tech, tag.id));
 

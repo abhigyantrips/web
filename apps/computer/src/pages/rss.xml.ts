@@ -1,9 +1,10 @@
+import { isPublished } from "@abhi/reader/publication";
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 
 export async function GET() {
 	const links = await getCollection("links");
-	const things = await getCollection("things", ({ data }) => data.published);
+	const things = await getCollection("things", isPublished);
 
 	return rss({
 		title: "abhigyan trips's tech shenanigans",

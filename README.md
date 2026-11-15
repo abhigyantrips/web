@@ -8,7 +8,8 @@ snapshots. The sibling repositories have not been changed.
 apps/now/       abhi.now — canonical public writing, feeds, sitemap
 apps/computer/  abhi.computer — desktop and native content windows
 apps/chhotu/    chhotu.abhi.now — authenticated publishing Worker and PWA
-content/        shared Markdown/MDX, images, schemas, loaders, prose utilities
+content/        shared Markdown/MDX, images, schemas, loaders, authored components
+packages/reader/  shared reader utilities and local Sätteri plugins
 content/computer/  existing journal, links, tech and fields
 scripts/        image-processing Git hook
 ```
@@ -38,8 +39,11 @@ Now and Computer load the same local collection definitions from
 `content/collections.ts`. Both public Blog selections exclude unpublished posts.
 Computer's existing collections remain under `content/computer/`; adding them to
 Now's public routes is a future editorial decision. Authored image paths stay
-relative to their Markdown files. Shared MDX refers to Now presentation helpers
-through the explicit `@now/` alias, which both reader apps resolve identically.
+relative to their Markdown files. Whoami's responsive components and assets live
+beside its MDX; article fonts live beside the shared posts, and the naïve-design
+article contains its own torn-paper generator. No shared content imports an app.
+Computer-specific collection definitions live in `content/computer/collections.ts`
+so another reader can opt into them without importing Computer's source.
 
 Computer generates article, weeknote, snippet collection, facet and project pages
 inside its desktop windows. It renders MDX and interactive components locally;
@@ -52,16 +56,35 @@ External media iframes authored in articles continue to work.
 
 Now's `/embed` variants, receiver, transformation middleware and embed cache are
 retired. Its normal pages, plaintext variants, feeds, sitemap and social cards
-remain. Computer copies Now's public presentation assets into its generated
-`public/now-assets/` directory in development and builds; it never fetches Now's
-rendered public HTML. Prose utilities are shared in `content/prose.css`.
+remain. Both readers import their content assets directly and own their prose styles in
+`src/styles/prose.css`. Computer has no dependency on Now's config, source, or
+public directory, and no HTML response-rewriting middleware.
+
+`@abhi/reader` provides reading-time/date formatting, publication filtering,
+snippet aggregation, search-index construction, browser search matching, and
+calendar calculations through separate subpath exports. Browser imports do not
+load collection queries. Launcher search indexes titles and descriptions only;
+individual snippets are excluded, while the Snippets application remains searchable.
+Each app queries collections and chooses its own routes. Computer's
+`getContentPages()` enumerates its routes directly from those collections.
+
+Each Astro config independently enables its installed Sätteri figure and paragraph
+anchor plugins. Local plugins in `packages/reader/src/plugins/` provide prose dash
+conversion and configurable authored-link rewriting. Now uses dash conversion;
+Computer additionally rewrites same-application links locally and opens other HTTP
+links canonically in a new tab. Literal Markdown, HTML, and MDX links are handled
+during compilation; dynamically generated component links must supply their own
+URLs. The current route policy recognizes route shapes rather than checking an
+additional collection manifest. No content queries run inside Markdown plugins.
+
+Run `pnpm test` for the shared reader and Computer state/motion tests.
 
 All three apps use Astro 7.4.11 and shared Astro integration and Tailwind versions
 from the catalog in `pnpm-workspace.yaml`. Each app declares the packages it uses
 with `catalog:`; update their shared versions in the catalog and regenerate
 `pnpm-lock.yaml`. Astro belongs to the apps, not the workspace root.
-Computer still imports Now's configuration and components directly, so a filtered
-Computer install must include both `abhi-computer...` and `abhi.now...`.
+A filtered Computer install can use `pnpm --filter abhi-computer... install`;
+its workspace dependencies include `@abhi/reader`, without installing Now.
 
 ## Cloudflare rollout
 
@@ -92,8 +115,7 @@ See Cloudflare's [monorepo setup](https://developers.cloudflare.com/workers/ci-c
 and [custom dependency installation](https://developers.cloudflare.com/workers/ci-cd/builds/build-image/#skip-dependency-install).
 
 Include these watch
-paths for both readers: `content/**`, their own `apps/<name>/**`,
-`apps/now/**` for Computer, `package.json`,
+paths for both readers: `content/**`, `packages/reader/**`, their own `apps/<name>/**`, `package.json`,
 `pnpm-lock.yaml`, and `pnpm-workspace.yaml`. Chhotu watches `apps/chhotu/**` and
 root package/workspace/lockfile changes; content-only commits need not redeploy it.
 Both readers build the same content commit, with independent deploys and rollbacks.

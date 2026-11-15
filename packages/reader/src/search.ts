@@ -1,11 +1,9 @@
-import type { ApplicationId } from "../data/applications";
-
 export interface SearchEntry {
-	app: ApplicationId;
+	app: string;
 	title: string;
 	url: string;
 	date: string;
-	text: string;
+	description: string;
 }
 
 export function normalizeSearch(value: string) {
@@ -19,7 +17,8 @@ export function searchEntries(entries: SearchEntry[], query: string) {
 	return entries
 		.map((entry) => {
 			const title = normalizeSearch(entry.title);
-			if (!terms.every((term) => title.includes(term))) return null;
+			const searchable = `${title} ${normalizeSearch(entry.description)}`;
+			if (!terms.every((term) => searchable.includes(term))) return null;
 			const score =
 				(title === normalized ? 100 : title.includes(normalized) ? 50 : 0) +
 				terms.filter((term) => title.includes(term)).length * 10;

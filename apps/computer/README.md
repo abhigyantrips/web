@@ -4,7 +4,7 @@ Computer is part of the root pnpm workspace. Run `pnpm dev:computer` from the
 repository root (port 4322), or `pnpm dev` from this application directory.
 `pnpm build:computer` builds it independently; Now need not be running or deployed.
 
-The desktop windows render Now's shared content directly. Collection sources live
+The desktop windows render the shared content directly. Collection sources live
 under the root `content/`, including Computer's existing journal, links and
 metadata in `content/computer/`. Search uses the same locally loaded, published
 content as the reading windows. Article MDX retains its interactive components.
@@ -16,10 +16,12 @@ with no cross-origin synchronization. `setAnalyticsDisabled()` remains the helpe
 for same-tab preference changes. External media inside authored articles is
 independent of the retired Now iframe integration.
 
-Computer's original journal uses its remark/rehype and code-meta renderer, while
-shared Now content uses Now's Sätteri renderer. Shared prose styling and local
-copies of presentation assets preserve article typography without importing Now's
-full document layout or its global preference scripts.
+Computer owns its Astro/Sätteri configuration and prose stylesheet. It imports
+shared reader utilities and local Markdown plugins from `@abhi/reader`, and loads
+collections from `content/`; it imports no Now source, config, or public assets.
+Markdown, literal HTML, and literal MDX links are rewritten during compilation.
+Generated component links are explicit. Search includes post titles/descriptions
+and app metadata, without individual snippets or article body text.
 
 Run `pnpm --filter abhi-computer check` from the repository root.
 See the root [README](../../README.md) for Cloudflare
@@ -57,7 +59,7 @@ same-app content navigation keeps its chrome steady. CSS motion tokens live in
 The search index is fetched once per document, and taskbar links prefetch their
 destinations. Astro handles page HTML, head, style and script updates.
 
-Run the state-model and motion tests with `node --test tests/*.test.ts` from this
+Run the state-model and motion tests with `pnpm test` from this
 application directory (Node 22.18+ supports the TypeScript test files directly).
 
 The Weeknotes calendar also displays the `events` collection as Attended Events.

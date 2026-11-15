@@ -16,18 +16,7 @@ import mdx from "@astrojs/mdx";
 import cards from "astro-cards";
 import stableCardCache from "./src/integrations/stable-card-cache.ts";
 
-// Sätteri's Smartypants handles my en dashes correctly, but they look
-// the same as normal dashes on Sour Gummy. So this thing handles converting
-// them into em dashes.
-/** @type {ReturnType<typeof import("@astrojs/markdown-satteri").satteriCollectImagesPlugin>} */
-const enDashConversion = {
-	name: "en-dash-conversion",
-	text(node, ctx) {
-		if (node.value.includes("--")) {
-			ctx.setProperty(node, "value", node.value.replaceAll("--", "—"));
-		}
-	},
-};
+import { emDashes } from "@abhi/reader/plugins/em-dashes";
 
 // https://astro.build/config
 export default defineConfig({
@@ -78,7 +67,7 @@ export default defineConfig({
 			features: {
 				smartPunctuation: { dashes: false },
 			},
-			mdastPlugins: [enDashConversion],
+			mdastPlugins: [emDashes()],
 			hastPlugins: [
 				({ fileURL }) =>
 					fileURL?.pathname.includes("/content/snippets/") ? null : satteriFigure(),

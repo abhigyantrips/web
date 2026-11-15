@@ -1,6 +1,7 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import { getCollection, getEntries, render, type CollectionEntry } from "astro:content";
-import { formatBlogDate, formatReadingTime } from "@now/lib/utils";
+import { formatBlogDate, formatReadingTime } from "@abhi/reader/utils";
 import { extractOpeningHtml } from "@now/lib/blog-preview";
 import { renderEntryHtml } from "@now/lib/content-html";
 import { renderCard } from "astro-cards/runtime";
@@ -8,8 +9,9 @@ import ReadingLayout from "@now/layouts/reading-layout.astro";
 
 export async function getStaticPaths() {
 	const tagDigests = new Map((await getCollection("tags")).map((tag) => [tag.id, tag.digest]));
-	const posts = await getCollection("blog", ({ data }) =>
-		import.meta.env.DEV ? true : data.published
+	const posts = await getCollection(
+		"blog",
+		({ data }) => import.meta.env.DEV || isPublished({ data })
 	);
 	return posts.map((post) => ({
 		params: { id: post.id },

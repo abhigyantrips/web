@@ -1,3 +1,4 @@
+import { isPublished } from "@abhi/reader/publication";
 import rss from "@astrojs/rss";
 import { SITE } from "@now/consts";
 import { renderEntryContent } from "@now/lib/rss";
@@ -5,7 +6,7 @@ import type { APIContext } from "astro";
 import { getCollection } from "astro:content";
 
 export async function GET(context: APIContext) {
-	const blog = await getCollection("blog", ({ data }) => data.published);
+	const blog = await getCollection("blog", isPublished);
 	const weeknotes = await getCollection("weeknotes");
 	const before = await getCollection("before");
 	const site = new URL(context.site || SITE.URL);

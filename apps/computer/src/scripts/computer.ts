@@ -1,9 +1,9 @@
+import { normalizeSearch, searchEntries, type SearchEntry } from "@abhi/reader/search";
 import {
 	type TransitionBeforePreparationEvent,
 	type TransitionBeforeSwapEvent,
 } from "astro:transitions/client";
 import { applications, type ApplicationId } from "../data/applications";
-import { normalizeSearch, searchEntries, type SearchEntry } from "../lib/search";
 import { initializeDesktopShell, validApplicationId as validId } from "./desktop-shell";
 
 // Launcher DOM, search state and its downloaded index survive content navigation.
@@ -40,7 +40,7 @@ function initializeLauncherSearch() {
 							(entry) =>
 								entry &&
 								validId(entry.app) &&
-								[entry.title, entry.text, entry.url, entry.date].every(
+								[entry.title, entry.description, entry.url, entry.date].every(
 									(value) => typeof value === "string"
 								)
 						)

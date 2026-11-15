@@ -1,5 +1,5 @@
 ---
-import { createTornPaperMask } from "@now/lib/torn-paper";
+import { createTornPaperMask } from "./torn-paper";
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 
@@ -25,7 +25,11 @@ const yOffsets = ["0.75rem", "-0.35rem", "1rem", "-0.1rem", "0.2rem", "0.65rem"]
 				].join("; ");
 
 				return (
-					<a class="facet-polaroid group" href={`/whoami/${facet.id}`} style={style}>
+					<a
+						class="facet-polaroid group"
+						href={`https://abhi.now/whoami/${facet.id}`}
+						style={style}
+					>
 						<span class="facet-sheet">
 							<span class="facet-frame">
 								<span class="facet-image not-prose">

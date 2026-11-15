@@ -1,13 +1,14 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import ReadingLayout from "@/layouts/reading-layout.astro";
 import TagGroups from "@/components/tag-groups.astro";
 import { mdxComponents } from "@/lib/mdx";
-import { formatReadingTime } from "@/lib/utils";
+import { formatReadingTime } from "@abhi/reader/utils";
 import { getEntries } from "astro:content";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-	const posts = await getCollection("things", ({ data }) => data.published);
+	const posts = await getCollection("things", isPublished);
 	return posts.map((post) => ({
 		params: { id: post.id },
 		props: { post },

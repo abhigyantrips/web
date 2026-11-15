@@ -1,9 +1,11 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import { getCollection, type CollectionEntry } from "astro:content";
 import PageLayout from "@now/layouts/page-layout.astro";
 
-const entries = await getCollection("blog", ({ data }) =>
-	import.meta.env.DEV ? true : data.published
+const entries = await getCollection(
+	"blog",
+	({ data }) => import.meta.env.DEV || isPublished({ data })
 );
 
 entries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());

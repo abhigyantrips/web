@@ -1,9 +1,10 @@
+import { isPublished } from "@abhi/reader/publication";
 import { getCollection } from "astro:content";
 
-/** Both route generation and navigation use this publication-filtered manifest. */
-export async function getNowPages() {
+/** Computer chooses its routes directly from the shared collections. */
+export async function getContentPages() {
 	const [posts, notes, folders, projects] = await Promise.all([
-		getCollection("blog", ({ data }) => data.published),
+		getCollection("blog", isPublished),
 		getCollection("weeknotes"),
 		getCollection("snippetCollections"),
 		getCollection("projects"),

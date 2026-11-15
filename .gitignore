@@ -43,6 +43,3 @@ slopdocs/
 !**/.dev.vars.example
 content/.obsidian/
 content/.stfolder/
-
-# Computer copies shared presentation assets for development and production.
-apps/computer/public/now-assets/

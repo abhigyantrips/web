@@ -5,52 +5,39 @@ import tailwindcss from "@tailwindcss/vite";
 
 import cloudflare from "@astrojs/cloudflare";
 
-import rehypeFigure from "@microflash/rehype-figure";
+import { emDashes } from "@abhi/reader/plugins/em-dashes";
+import { contentLinks } from "@abhi/reader/plugins/links";
+import { satteri } from "@astrojs/markdown-satteri";
+import satteriAutolinkParagraphs from "satteri-autolink-paragraphs";
+import satteriFigure from "satteri-figure";
 
 import { codeMetaTransformer } from "./src/lib/shiki-transformers.ts";
 
 import mdx from "@astrojs/mdx";
 
-import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
-import { cp, rm } from "node:fs/promises";
-import nowConfig from "../now/astro.config.mjs";
-
-const localProcessor = unified({ rehypePlugins: [rehypeFigure] });
-const sharedProcessor = nowConfig.markdown?.processor;
-/** @type {import("@astrojs/markdown-remark").MarkdownProcessor} */
-const processor = {
-	name: "local-and-shared",
-	options: {},
-	async createRenderer(options) {
-		if (!sharedProcessor) throw new Error("Now Markdown processor is required");
-		const local = await localProcessor.createRenderer(options);
-		const shared = await sharedProcessor.createRenderer(options);
-		return {
-			render(content, context) {
-				return (context?.fileURL?.pathname.includes("/content/computer/") ? local : shared).render(
-					content,
-					context
-				);
-			},
-		};
+// Source documents belong to the shared content tree. Route policy belongs to this reader.
+const contentRoot = new URL("../../content/", import.meta.url);
+const links = contentLinks({
+	canonicalOrigin: "https://abhi.now",
+	documentPath(fileURL) {
+		if (!fileURL.href.startsWith(contentRoot.href)) return undefined;
+		const relative = decodeURIComponent(fileURL.href.slice(contentRoot.href.length));
+		// Journal content has its own routes and presentation.
+		if (relative.startsWith("computer/")) return undefined;
+		return `/${relative.replace(/\.(md|mdx)$/, "").replace(/\/index$/, "")}`;
 	},
-	async createMdxRenderer(options, mdx) {
-		if (!sharedProcessor?.createMdxRenderer || !localProcessor.createMdxRenderer)
-			throw new Error("Both processors must support MDX");
-		const local = await localProcessor.createMdxRenderer(options, mdx);
-		const shared = await sharedProcessor.createMdxRenderer(options, mdx);
-		return {
-			process(content, filePath, frontmatter) {
-				return (filePath.includes("/content/computer/") ? local : shared).process(
-					content,
-					filePath,
-					frontmatter
-				);
-			},
-		};
+	isLocalPath(pathname, sourcePath) {
+		const scope = sourcePath.split("/")[1];
+		if (pathname.split("/")[1] !== scope || /\.[a-z0-9]+$/i.test(pathname)) return false;
+		if (scope === "blog") return /^\/blog(?:\/[^/]+)?$/.test(pathname);
+		if (scope === "weeknotes") return /^\/weeknotes(?:\/\d{4}\/\d+)?$/.test(pathname);
+		if (scope === "projects")
+			return pathname === "/projects" || /^\/projects\/[^/]+\/[^/]+$/.test(pathname);
+		if (scope === "snippets") return /^\/snippets(?:\/[^/]+)?$/.test(pathname);
+		return false;
 	},
-};
+});
 
 // https://astro.build/config
 export default defineConfig({
@@ -95,7 +82,26 @@ export default defineConfig({
 	],
 
 	markdown: {
-		processor,
+		processor: satteri({
+			features: { smartPunctuation: { dashes: false } },
+			mdastPlugins: [emDashes()],
+			hastPlugins: [
+				({ fileURL }) =>
+					fileURL?.pathname.includes("/content/snippets/") ? null : satteriFigure(),
+				({ fileURL }) =>
+					fileURL?.pathname.includes("/content/snippets/")
+						? null
+						: satteriAutolinkParagraphs({
+								paragraphProperties: { className: ["group"] },
+								properties: {
+									className: [
+										"hidden md:inline invisible group-hover:visible no-underline text-(--color-text)/50",
+									],
+								},
+							}),
+				links,
+			],
+		}),
 		shikiConfig: {
 			themes: {
 				light: "vitesse-light",
@@ -105,20 +111,7 @@ export default defineConfig({
 		},
 	},
 
-	integrations: [
-		mdx(),
-		sitemap(),
-		{
-			name: "local-now-assets",
-			hooks: {
-				"astro:config:setup": async () => {
-					const assets = new URL("./public/now-assets/", import.meta.url);
-					await rm(assets, { recursive: true, force: true });
-					await cp(new URL("../now/public/", import.meta.url), assets, { recursive: true });
-				},
-			},
-		},
-	],
+	integrations: [mdx(), sitemap()],
 
 	vite: {
 		plugins: [tailwindcss()],

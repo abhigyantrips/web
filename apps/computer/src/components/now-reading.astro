@@ -1,8 +1,10 @@
 ---
+import paperclip from "@/assets/icons/paper-clip-2.svg?url";
+import leftAlign from "@/assets/icons/left-align.svg?url";
 import Container from "@/components/container.astro";
 import { getEntries, type CollectionEntry } from "astro:content";
-import { getMonthColor } from "@now/lib/month-colors";
-import { formatBlogDate, formatReadingTime } from "@now/lib/utils";
+import { getMonthColor } from "@/lib/month-colors";
+import { formatBlogDate, formatReadingTime } from "@abhi/reader/utils";
 
 interface Props {
 	entry: CollectionEntry<"blog"> | CollectionEntry<"weeknotes">;
@@ -87,7 +89,7 @@ const tags = post ? await getEntries(post.data.tags ?? []) : [];
 				>
 					<span
 						class="pdf-btn-icon size-4 shrink-0"
-						style="--icon-url: url(/icons/paper-clip-2.svg)"
+						style={`--icon-url: url(${paperclip})`}
 						aria-hidden="true"></span>
 					Download PDF
 				</button>
@@ -97,7 +99,7 @@ const tags = post ? await getEntries(post.data.tags ?? []) : [];
 				>
 					<span
 						class="pdf-btn-icon size-4 shrink-0"
-						style="--icon-url: url(/icons/left-align.svg)"
+						style={`--icon-url: url(${leftAlign})`}
 						aria-hidden="true"></span>
 					Show Plaintext Version
 				</a>

@@ -1,8 +1,9 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import ComputerLayout from "@/layouts/computer-layout.astro";
 import { getCollection } from "astro:content";
 const [things, links] = await Promise.all([
-	getCollection("things", ({ data }) => data.published),
+	getCollection("things", isPublished),
 	getCollection("links"),
 ]);
 const entries = [

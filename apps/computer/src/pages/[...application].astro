@@ -1,15 +1,16 @@
 ---
+import { isPublished } from "@abhi/reader/publication";
 import ComputerLayout from "@/layouts/computer-layout.astro";
-import { getNowPages } from "@/lib/now-content";
+import { getContentPages } from "@/lib/content-pages";
 import type { ApplicationId } from "@/data/applications";
 import { getCollection, render } from "astro:content";
 import Snippets from "@/components/snippets.astro";
 import WeeknoteCalendar from "@/components/weeknote-calendar.astro";
 import NowReading from "@/components/now-reading.astro";
-import "@/styles/now-content.css";
+import "@/styles/prose.css";
 export async function getStaticPaths() {
 	return [
-		...(await getNowPages()).map((page) => ({
+		...(await getContentPages()).map((page) => ({
 			params: { application: page.path.slice(1) },
 			props: page,
 		})),
@@ -29,10 +30,7 @@ const collection =
 			: app === "projects"
 				? "projects"
 				: null;
-const entries =
-	!entry && collection
-		? await getCollection(collection, ({ data }) => !("published" in data) || data.published)
-		: [];
+const entries = !entry && collection ? await getCollection(collection, isPublished) : [];
 entries.sort(
 	(a, b) =>
 		("date" in b.data

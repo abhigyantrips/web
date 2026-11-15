@@ -1,64 +1,117 @@
+/* Reader typography is owned by Computer, independently of its desktop shell. */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
-
+@source "../../../../content";
 @utility prose-content {
-	@apply prose max-w-none text-justify;
-	@apply prose-strong:font-semibold;
-	@apply prose-a:hover:text-white;
-	@apply prose-pre:rounded-none! prose-pre:text-base!;
-	@apply prose-img:rounded-none prose-img:border prose-img:border-black/10 prose-img:sm:mx-auto prose-img:sm:w-4/5;
-	@apply prose-figcaption:text-(--color-text-muted) prose-figcaption:italic prose-figcaption:sm:mx-auto prose-figcaption:sm:max-w-lg prose-figcaption:sm:text-center;
-	--tw-prose-body: var(--color-text);
-	--tw-prose-headings: var(--color-text);
-	--tw-prose-lead: var(--color-text-muted);
-	--tw-prose-links: var(--color-text);
-	--tw-prose-bold: var(--color-text);
-	--tw-prose-counters: var(--color-text-muted);
-	--tw-prose-bullets: var(--color-text-muted);
-	--tw-prose-hr: var(--color-line);
-	--tw-prose-quotes: var(--color-text);
-	--tw-prose-quote-borders: var(--color-line);
-	--tw-prose-captions: var(--color-text-muted);
-	--tw-prose-kbd: var(--color-text);
-	--tw-prose-code: var(--color-text);
-	--tw-prose-pre-code: var(--color-text);
-	--tw-prose-pre-bg: var(--color-hover);
-	--tw-prose-th-borders: var(--color-line);
-	--tw-prose-td-borders: var(--color-line);
+	@apply prose max-w-none text-justify text-(--color-text) marker:text-(--color-text)/75 lg:prose-lg dark:prose-invert;
+	@apply prose-blockquote:border-l-4 prose-blockquote:border-(--color-text) prose-blockquote:text-(--color-text)/75 prose-blockquote:[&>p]:first-of-type:before:content-none prose-blockquote:[&>p]:last-of-type:after:content-none;
+	@apply prose-a:text-(--color-text) prose-a:decoration-(--color-text-muted) prose-a:decoration-1 prose-a:underline-offset-3 prose-a:hover:bg-(--color-text) prose-a:hover:text-(--color-bg) prose-a:hover:decoration-transparent prose-a:*:hover:text-(--color-bg) prose-strong:text-(--color-text) prose-em:text-(--color-text);
+	@apply prose-headings:font-semibold prose-headings:tracking-wide prose-headings:text-(--color-text);
+	@apply prose-hr:my-8 prose-hr:border-t-2 prose-hr:border-(--color-text-muted)/20;
+	@apply prose-img:rounded-xl prose-img:border prose-img:border-(--color-text-muted)/20 prose-img:sm:mx-auto prose-img:sm:w-4/5;
+	@apply prose-figcaption:text-(--color-text-muted) prose-figcaption:italic prose-figcaption:sm:mx-auto prose-figcaption:sm:max-w-md prose-figcaption:sm:text-center;
 
-	overflow-wrap: break-word;
+	.footnotes {
+		@apply text-sm lg:text-base prose-p:my-3 prose-li:my-2;
 
-	:is(a, code):not(pre code) {
-		overflow-wrap: anywhere;
+		.data-footnote-backref {
+			@apply text-(--color-text-muted) no-underline hover:text-(--color-bg);
+		}
 	}
 
-	.footnotes ol {
-		@apply pl-10 text-sm lg:text-base;
+	:not(pre) > code {
+		@apply rounded bg-(--color-text-muted)/10 px-1 py-0.5 font-mono font-normal text-(--color-text) before:content-none after:content-none;
+	}
+
+	del {
+		@apply text-(--color-text)/80 decoration-(--color-text) decoration-2;
+	}
+
+	abbr {
+		@apply decoration-(--color-text-muted) decoration-dashed decoration-1 underline-offset-3;
 	}
 }
 
-.link-entry .prose-content > :last-child {
-	margin-bottom: 0;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+.now-content {
+	font-family: var(--font-gummy), sans-serif;
 }
 
-/* Remove Tailwind Typography's default before/after pseudo-elements for code */
-.prose-content code::before,
-.prose-content code::after {
+@media (any-pointer: fine) {
+	.now-content :is(a[href], button, summary, [role="button"], .cursor-pointer) {
+		cursor: var(--cursor-click) !important;
+	}
+}
+
+/* Match now's base reading size rather than inheriting the desktop's 15px. */
+.now-reading {
+	font-size: 1rem;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* These code treatments are part of now's global stylesheet. */
+.now-content .prose code::before,
+.now-content .prose code::after {
 	content: none !important;
 }
 
-/* Style the inline code elements */
-.prose-content code:not(pre code) {
+.now-content .prose code {
 	font-size: 0.85em !important;
 	font-weight: 500;
 	padding: 0.2em 0.4em;
 	border-radius: 0.25rem;
-	background-color: color-mix(in srgb, var(--color-text-muted) 10%, transparent);
+	background-color: rgba(150, 150, 150, 0.2);
 	color: inherit;
 }
 
-html[data-theme="dark"] .astro-code,
-html[data-theme="dark"] .astro-code span {
-	color: var(--shiki-dark) !important;
-	background-color: var(--shiki-dark-bg) !important;
+@media print {
+	@page {
+		margin: 1.5cm;
+	}
+
+	body:has(.now-reading) {
+		background: var(--color-bg);
+	}
+
+	body:has(.now-reading)
+		:is(.taskbar, .window-header, .browser-bar, #launcher, #control-panel, #app-tooltip) {
+		display: none !important;
+	}
+
+	body:has(.now-reading)
+		:is(.desktop-shell, .workspace, .application-window, [data-application-content]) {
+		position: static;
+		display: block;
+		height: auto;
+		overflow: visible;
+		box-shadow: none;
+	}
+
+	.now-reading .h-entry {
+		padding-top: 0 !important;
+	}
+
+	.now-reading .h-entry,
+	.now-reading .h-entry *:not(figure, ul, ol, li, blockquote, blockquote *) {
+		max-width: 100% !important;
+		padding-inline: 0 !important;
+	}
+
+	.now-reading blockquote {
+		border-left-color: #3c3836 !important;
+	}
+
+	.now-reading :is(figure, img) {
+		break-inside: avoid;
+	}
+
+	.now-reading figure {
+		max-width: 60% !important;
+		margin-inline: auto;
+	}
+
+	.now-reading figure img {
+		max-width: 100% !important;
+	}
 }

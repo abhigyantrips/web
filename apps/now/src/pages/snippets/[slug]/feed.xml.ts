@@ -1,7 +1,7 @@
+import { getSnippetFeed } from "@abhi/reader/snippets";
 import rss from "@astrojs/rss";
 import { SITE } from "@now/consts";
 import { renderEntryContent } from "@now/lib/rss";
-import { getSnippetFeed } from "@now/lib/snippets";
 import type { APIContext, GetStaticPaths } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 

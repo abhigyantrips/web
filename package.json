@@ -14,7 +14,8 @@
     "build:chhotu": "pnpm --filter chhotu build",
     "check": "pnpm --filter abhi.now check && pnpm --filter abhi-computer check && pnpm --filter chhotu check",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "test": "pnpm --filter @abhi/reader test && pnpm --filter abhi-computer test"
   },
   "devDependencies": {
     "prettier": "^3.8.1",

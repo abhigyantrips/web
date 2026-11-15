@@ -1,4 +1,5 @@
 ---
+import headshot from "../images/headshot.png";
 const linkClass =
 	"underline decoration-dashed decoration-(--color-text-muted) underline-offset-3 hover:bg-(--color-text) hover:text-(--color-bg) hover:no-underline";
 
@@ -12,7 +13,7 @@ const weatherBoyGif = "https://media.giphy.com/media/SkV2MPigf7YUSDtaG7/giphy.gi
 		class="col-span-2 flex flex-col items-center justify-center px-2 pb-2 text-center md:col-span-1 md:px-5 md:pb-0"
 	>
 		<img
-			src="/headshot.png"
+			src={headshot.src}
 			alt="Abhigyan Tripathi"
 			width="400"
 			height="400"
