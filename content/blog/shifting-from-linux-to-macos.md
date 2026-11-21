@@ -143,11 +143,11 @@ So it wasn't long before I shifted my app management to be via [Homebrew](https:
 
 #### 5. Rectangle
 
-The Apple ecosystem seems to have a rich community of third-party window managers that are trying to fill the space and make up for the disappointment that macOS has brought. The [list of these window managers](https://macoswm.com/) is _long_ but one that comes well-recommended to me from people is [Rectangle](https://rectangleapp.com/).
+The Apple ecosystem seems to have a rich community of third-party window managers that are trying to fill the space and make up for the disappointment that macOS has brought. The [list of these window managers](https://macoswm.com/) is _loong_, but one that comes well-recommended to me from people is [Rectangle](https://rectangleapp.com/).
 
 ![A snapshot of Rectangle's configurations.](./images/shifting-from-linux-to-macos-04.jpg)
 
-It comes with every single keyboard shortcut you could possible need in its free version, along with a paid version that includes cursor movements and some other extras.
+It comes with every single keyboard shortcut you could possibly need in its free version, along with a paid version that includes cursor movements and some other extras.
 
 It's actually configuration windows like these that I keep missing in Apple's first-party experience; ones that lay all the settings bare and say, "Here you go, do what you want." It's a testament to what they think about the users and trust them with, and I'm currently finding their lack of trust a little offensive.
 
