@@ -1,0 +1,264 @@
+---
+import type { ImageMetadata } from "astro";
+import { render } from "astro:content";
+import { getReaderContent } from "@abhi/reader/routes";
+import { formatBlogDate, formatReadingTime } from "@abhi/reader/utils";
+import InterfaceChoices from "@abhi/reader/components/interface-choices";
+import Whoami from "@content/whoami/index.mdx";
+import MobileLayout from "../layouts/mobile-layout.astro";
+import Snippets from "../components/snippets.astro";
+import Calendar from "../components/calendar.astro";
+import { applications } from "../data/applications";
+import { getPages } from "../lib/pages";
+export async function getStaticPaths() {
+	return [
+		...(await getPages()).map((page) => ({ params: { page: page.path }, props: page })),
+		...[
+			...applications.map((app) => app.id),
+			"things",
+			"links",
+			"snippets/folders",
+			"credits",
+			"desktop",
+		].map((path) => ({ params: { page: path }, props: { path, scope: path, entry: undefined } })),
+	];
+}
+interface Props {
+	path: string;
+	scope: string;
+	entry?: Awaited<ReturnType<typeof getPages>>[number]["entry"];
+}
+const { scope, path, entry } = Astro.props;
+if (path === "credits" || path === "desktop")
+	return Astro.redirect(path === "credits" ? "/colophon/" : "/");
+const c = await getReaderContent();
+const title = entry
+	? "link" in entry.data
+		? entry.data.link.title
+		: "title" in entry.data
+			? entry.data.title
+			: entry.data.name
+	: (applications.find((app) => app.id === scope)?.title ??
+		(path === "snippets/folders"
+			? "Snippet collections"
+			: scope === "things"
+				? "Things"
+				: "Links"));
+const description = entry && "description" in entry.data ? entry.data.description : undefined;
+const Content =
+	entry &&
+	entry.collection !== "snippetCollections" &&
+	entry.collection !== "tech" &&
+	entry.collection !== "fields"
+		? (await render(entry)).Content
+		: null;
+const list =
+	scope === "journal"
+		? [...c.things, ...c.links]
+		: scope === "blog"
+			? c.blog
+			: scope === "weeknotes"
+				? c.weeknotes
+				: scope === "projects"
+					? c.projects
+					: scope === "things"
+						? c.things
+						: scope === "links"
+							? c.links
+							: [];
+const date =
+	entry && "date" in entry.data
+		? entry.data.date
+		: entry && "fromDate" in entry.data
+			? entry.data.fromDate
+			: entry && "startDate" in entry.data
+				? entry.data.startDate
+				: undefined;
+const dateOf = (item: (typeof list)[number]) =>
+	"date" in item.data
+		? item.data.date
+		: "fromDate" in item.data
+			? item.data.fromDate
+			: item.data.startDate;
+list.sort((a, b) => dateOf(b).getTime() - dateOf(a).getTime());
+const tax = entry?.collection === "tech" || entry?.collection === "fields" ? entry : null;
+const related = tax
+	? [...c.things, ...c.links].filter((item) =>
+			item.data[tax.collection]?.some((ref: { id: string }) => ref.id === tax.id)
+		)
+	: [];
+const canonical = ["blog", "weeknotes", "projects", "snippets", "whoami"].includes(scope)
+	? `https://abhi.now/${path}/`
+	: undefined;
+---
+
+<MobileLayout title={title} description={description} canonical={canonical}>
+	<a
+		class="back-link"
+		href={entry
+			? scope === "things" || scope === "links" || tax
+				? "/journal/"
+				: `/${scope}/`
+			: "/"}
+		>← {
+			entry
+				? scope === "things" || scope === "links" || tax
+					? "Lab Notebook"
+					: (applications.find((app) => app.id === scope)?.title ?? "Apps")
+				: "All apps"
+		}</a
+	>
+	<h1>{title}</h1>
+	{description && <p>{description}</p>}
+	{
+		date && (
+			<p class="metadata">
+				<time datetime={date.toISOString()}>{formatBlogDate(date)}</time>
+				{entry && "body" in entry && entry.body && ` · ${formatReadingTime(entry.body)}`}
+			</p>
+		)
+	}
+	{
+		scope === "whoami" && (
+			<article class="prose-content">
+				<Whoami />
+			</article>
+		)
+	}
+	{
+		scope === "settings" && (
+			<>
+				<>
+					<h2>Reading interface</h2>
+					<p>Choose a view for your next visit. Your choice follows links within the reader.</p>
+					<InterfaceChoices interface="mobile" />
+				</>
+			</>
+		)
+	}
+	{
+		scope === "colophon" && (
+			<article class="prose-content">
+				<>
+					<p>
+						This is the pocket-sized sibling of <a href="https://abhi.computer">abhi.computer</a>.
+						Both read the same shared content. <a href="https://abhi.now">abhi.now</a> is the
+						canonical home of my writing.
+					</p>
+					<p>
+						Built with <a href="https://astro.build">Astro</a>, with Sour Gummy by Stefie Justprince
+						and Atkinson Hyperlegible by the Braille Institute. The notebook mark and interface
+						glyphs are local artwork and text.
+					</p>
+					<p>The About Me page carries its own credits for shared artwork and components.</p>
+					<InterfaceChoices interface="mobile" />
+				</>
+			</article>
+		)
+	}
+	{scope === "weeknotes" && !entry && <Calendar />}
+	{
+		scope === "snippets" || path === "snippets/folders" ? (
+			<Snippets
+				collectionId={entry?.collection === "snippetCollections" ? entry.id : undefined}
+				directory={path === "snippets/folders"}
+			/>
+		) : null
+	}
+	{
+		entry?.collection === "links" && (
+			<p>
+				<a href={entry.data.link.url}>Visit saved link ↗</a>
+			</p>
+		)
+	}
+	{
+		Content && (
+			<article class="prose-content">
+				<Content />
+			</article>
+		)
+	}
+	{
+		entry && (entry.collection === "things" || entry.collection === "links") && (
+			<nav class="choice-list" aria-label="Topics">
+				{[...(entry.data.tech ?? []), ...(entry.data.fields ?? [])].map((ref) => (
+					<a href={`/${ref.collection}/${ref.id}/`}>{ref.id}</a>
+				))}
+			</nav>
+		)
+	}
+	{
+		entry?.collection === "projects" && (
+			<>
+				<nav class="choice-list" aria-label="Project links">
+					{entry.data.links?.map((link: { url: string; label: string }) => (
+						<a href={link.url}>{link.label} ↗</a>
+					))}
+				</nav>
+				{entry.data.collaborators && (
+					<p>
+						With{" "}
+						{entry.data.collaborators.map((person: { url?: string; name: string }) =>
+							person.url ? <a href={person.url}>{person.name} </a> : <span>{person.name} </span>
+						)}
+					</p>
+				)}
+				{entry.data.attachments?.map((image: { src: ImageMetadata; alt?: string }) => (
+					<img
+						src={image.src.src}
+						alt={image.alt ?? ""}
+						width={image.src.width}
+						height={image.src.height}
+						loading="lazy"
+					/>
+				))}
+			</>
+		)
+	}
+	{
+		tax && (
+			<>
+				<ul class="entry-list">
+					{related.map((item) => (
+						<li>
+							<a href={`/${item.collection}/${item.id}/`}>
+								<h2>{"link" in item.data ? item.data.link.title : item.data.title}</h2>
+							</a>
+						</li>
+					))}
+				</ul>
+				{!related.length && <p>No posts or links use this topic yet.</p>}
+			</>
+		)
+	}
+	{
+		!entry && list.length > 0 && scope !== "weeknotes" && (
+			<ul class="entry-list">
+				{list.map((item) => (
+					<li>
+						<a href={`/${item.collection}/${item.id}/`}>
+							<time class="metadata" datetime={dateOf(item).toISOString()}>
+								{dateOf(item).toISOString().slice(0, 10)}
+							</time>
+							<h2>{"link" in item.data ? item.data.link.title : item.data.title}</h2>
+							{"description" in item.data && item.data.description && (
+								<p>{item.data.description}</p>
+							)}
+						</a>
+					</li>
+				))}
+			</ul>
+		)
+	}
+	{
+		scope === "journal" && (
+			<nav class="choice-list" aria-label="Notebook archives">
+				<>
+					<a href="/things/">Things</a>
+					<a href="/links/">Links</a>
+				</>
+			</nav>
+		)
+	}
+</MobileLayout>

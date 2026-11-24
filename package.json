@@ -8,20 +8,24 @@
     "dev:now": "pnpm --filter abhi.now dev",
     "dev:computer": "pnpm --filter abhi-computer dev --port 4322",
     "dev:chhotu": "pnpm --filter chhotu dev --port 4323",
-    "build": "pnpm build:now && pnpm build:computer && pnpm build:chhotu",
+    "build": "pnpm build:now && pnpm build:computer && pnpm build:chhotu && pnpm build:mobile",
     "build:now": "pnpm --filter abhi.now build",
     "build:computer": "pnpm --filter abhi-computer build",
     "build:chhotu": "pnpm --filter chhotu build",
-    "check": "pnpm --filter abhi.now check && pnpm --filter abhi-computer check && pnpm --filter chhotu check",
+    "check": "pnpm --filter abhi.now check && pnpm --filter abhi-computer check && pnpm --filter chhotu check && pnpm check:mobile",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "test": "pnpm --filter @abhi/reader test && pnpm --filter abhi-computer test"
+    "test": "pnpm --filter @abhi/reader test && pnpm --filter abhi-computer test",
+    "dev:mobile": "pnpm --filter abhi-mobile dev --port 4324",
+    "build:mobile": "pnpm --filter abhi-mobile build",
+    "check:mobile": "pnpm --filter abhi-mobile check"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@emnapi/runtime": "1.11.3"
   }
 }

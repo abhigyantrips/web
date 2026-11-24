@@ -17,8 +17,8 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const tech = await getEntries(post.data.tech || []);
-const fields = await getEntries(post.data.fields || []);
+const tech = await getEntries<"tech">(post.data.tech || []);
+const fields = await getEntries<"fields">(post.data.fields || []);
 ---
 
 <ReadingLayout

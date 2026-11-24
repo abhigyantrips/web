@@ -1,0 +1,68 @@
+---
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+import InterfaceHead from "@abhi/reader/components/interface-head";
+import "../styles/global.css";
+import "../styles/prose.css";
+interface Props {
+	title?: string;
+	description?: string;
+	canonical?: string;
+}
+const {
+	title = "Abhigyan’s pocket notebook",
+	description = "Writing, projects, and little discoveries by Abhigyan Trips.",
+	canonical,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<InterfaceHead interface="mobile" />
+		<title>{title} · abhi.mobile</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+		<link rel="canonical" href={canonical ?? new URL(Astro.url.pathname, Astro.site)} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<Font cssVariable="--font-gummy" preload />
+		<Font cssVariable="--font-atkinson" preload />
+		<ClientRouter />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		<header class="masthead">
+			<a href="/" aria-label="abhi.mobile home">abhi<span>.mobile</span></a><a
+				class="header-link"
+				href="/whoami/">Who’s this? ↗</a
+			>
+		</header>
+		<main id="main" tabindex="-1"><slot /></main>
+		<footer class="site-footer">
+			A small window into my world.<br /><a href="https://abhi.now">abhi.now ↗</a> · <a
+				href="/colophon/">Colophon</a
+			>
+		</footer>
+		<nav class="tab-bar" aria-label="Main navigation">
+			<a href="/" aria-current={Astro.url.pathname === "/" ? "page" : undefined}
+				><span aria-hidden="true">⌂</span>Apps</a
+			>
+			<a href="/search/" aria-current={Astro.url.pathname === "/search/" ? "page" : undefined}
+				><span aria-hidden="true">⌕</span>Search</a
+			>
+			<a
+				href="/weeknotes/"
+				aria-current={Astro.url.pathname.startsWith("/weeknotes/") ? "page" : undefined}
+				><span aria-hidden="true">▦</span>Calendar</a
+			>
+			<a href="/settings/" aria-current={Astro.url.pathname === "/settings/" ? "page" : undefined}
+				><span aria-hidden="true">⚙</span>Settings</a
+			>
+		</nav>
+	</body>
+</html>

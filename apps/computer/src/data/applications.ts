@@ -1,5 +1,12 @@
 export const applications = [
 	{
+		id: "whoami",
+		description: "A few facets of Abhigyan Trips.",
+		path: "/whoami/",
+		title: "About Me",
+		topLink: true,
+	},
+	{
 		id: "journal",
 		description: "Notes on tinkering, discoveries, and things worth keeping.",
 		path: "/journal/",

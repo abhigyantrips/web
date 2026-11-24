@@ -47,6 +47,9 @@ importers:
 
   .:
     devDependencies:
+      '@emnapi/runtime':
+        specifier: 1.11.3
+        version: 1.11.3
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -98,7 +101,7 @@ importers:
     devDependencies:
       '@astrojs/check':
         specifier: 'catalog:'
-        version: 0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)
+        version: 0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -177,7 +180,7 @@ importers:
     devDependencies:
       '@astrojs/check':
         specifier: 'catalog:'
-        version: 0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)
+        version: 0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)
       '@tailwindcss/typography':
         specifier: 'catalog:'
         version: 0.5.20(tailwindcss@4.3.3)
@@ -193,6 +196,49 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.0
         version: 0.8.0(prettier-plugin-astro@0.14.1)(prettier-plugin-organize-imports@4.3.0(prettier@3.8.4)(typescript@5.9.3))(prettier@3.8.4)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  apps/mobile:
+    dependencies:
+      '@abhi/reader':
+        specifier: workspace:*
+        version: link:../../packages/reader
+      '@astrojs/cloudflare':
+        specifier: 'catalog:'
+        version: 14.4.7(@types/node@26.6.5)(astro@7.4.11(@astrojs/markdown-remark@7.3.8)(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(workerd@1.20261110.1)(wrangler@4.161.0(@types/node@26.6.5))(yaml@2.9.1)
+      '@astrojs/markdown-satteri':
+        specifier: 'catalog:'
+        version: 0.4.9
+      '@astrojs/mdx':
+        specifier: 'catalog:'
+        version: 8.1.5(@astrojs/markdown-remark@7.3.8)(@astrojs/markdown-satteri@0.4.9)(astro@7.4.11(@astrojs/markdown-remark@7.3.8)(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+      '@astrojs/sitemap':
+        specifier: 'catalog:'
+        version: 3.7.4
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.3.3(vite@8.3.8(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+      astro:
+        specifier: 'catalog:'
+        version: 7.4.11(@astrojs/markdown-remark@7.3.8)(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
+      satteri-autolink-paragraphs:
+        specifier: ^0.3.0
+        version: 0.3.0(satteri@0.11.7)
+      satteri-figure:
+        specifier: ^0.2.0
+        version: 0.2.0(satteri@0.11.7)
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.3.3
+      wrangler:
+        specifier: 'catalog:'
+        version: 4.161.0(@types/node@26.6.5)
+    devDependencies:
+      '@astrojs/check':
+        specifier: 'catalog:'
+        version: 0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -247,7 +293,7 @@ importers:
     devDependencies:
       '@astrojs/check':
         specifier: 'catalog:'
-        version: 0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)
+        version: 0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)
       '@tailwindcss/typography':
         specifier: 'catalog:'
         version: 0.5.20(tailwindcss@4.3.3)
@@ -4755,16 +4801,16 @@ snapshots:
       jsonpointer: 5.0.1
       leven: 3.1.0
 
-  '@astrojs/astro2tsx@0.1.2(@emnapi/runtime@2.0.0-beta.2)':
+  '@astrojs/astro2tsx@0.1.2(@emnapi/runtime@1.11.3)':
     dependencies:
       '@emnapi/core': 1.11.3
-      '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@2.0.0-beta.2)
+      '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
     transitivePeerDependencies:
       - '@emnapi/runtime'
 
-  '@astrojs/check@0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)':
+  '@astrojs/check@0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/language-server': 2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)
+      '@astrojs/language-server': 2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)
       chokidar: 5.0.0
       kleur: 4.1.5
       typescript: 5.9.3
@@ -4774,9 +4820,9 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
-  '@astrojs/check@0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)':
+  '@astrojs/check@0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/language-server': 2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)
+      '@astrojs/language-server': 2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)
       chokidar: 5.0.0
       kleur: 4.1.5
       typescript: 5.9.3
@@ -4786,9 +4832,21 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
-  '@astrojs/check@0.9.12(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)':
+  '@astrojs/check@0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/language-server': 2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)
+      '@astrojs/language-server': 2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@5.9.3)
+      chokidar: 5.0.0
+      kleur: 4.1.5
+      typescript: 5.9.3
+      yargs: 18.2.0
+    transitivePeerDependencies:
+      - '@emnapi/runtime'
+      - prettier
+      - prettier-plugin-astro
+
+  '@astrojs/check@0.9.12(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)':
+    dependencies:
+      '@astrojs/language-server': 2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)
       chokidar: 5.0.0
       kleur: 4.1.5
       typescript: 6.0.3
@@ -4929,9 +4987,9 @@ snapshots:
       unified: 11.0.5
       yaml: 2.9.1
 
-  '@astrojs/language-server@2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)':
+  '@astrojs/language-server@2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.1)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@2.0.0-beta.2)
+      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@1.11.3)
       '@astrojs/yaml2ts': 0.2.4
       '@volar/kit': 2.4.28(typescript@5.9.3)
       '@volar/language-core': 2.4.28
@@ -4955,9 +5013,9 @@ snapshots:
       - '@emnapi/runtime'
       - typescript
 
-  '@astrojs/language-server@2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)':
+  '@astrojs/language-server@2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.8.4)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@2.0.0-beta.2)
+      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@1.11.3)
       '@astrojs/yaml2ts': 0.2.4
       '@volar/kit': 2.4.28(typescript@5.9.3)
       '@volar/language-core': 2.4.28
@@ -4981,9 +5039,35 @@ snapshots:
       - '@emnapi/runtime'
       - typescript
 
-  '@astrojs/language-server@2.17.3(@emnapi/runtime@2.0.0-beta.2)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)':
+  '@astrojs/language-server@2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@5.9.3)':
     dependencies:
-      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@2.0.0-beta.2)
+      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@1.11.3)
+      '@astrojs/yaml2ts': 0.2.4
+      '@volar/kit': 2.4.28(typescript@5.9.3)
+      '@volar/language-core': 2.4.28
+      '@volar/language-server': 2.4.28
+      '@volar/language-service': 2.4.28
+      muggle-string: 0.4.1
+      tinyglobby: 0.2.17
+      volar-service-css: 0.0.71(@volar/language-service@2.4.28)
+      volar-service-emmet: 0.0.71(@volar/language-service@2.4.28)
+      volar-service-html: 0.0.71(@volar/language-service@2.4.28)
+      volar-service-prettier: 0.0.71(@volar/language-service@2.4.28)(prettier@3.9.10)
+      volar-service-typescript: 0.0.71(@volar/language-service@2.4.28)
+      volar-service-typescript-twoslash-queries: 0.0.71(@volar/language-service@2.4.28)
+      volar-service-yaml: 0.0.71(@volar/language-service@2.4.28)
+      vscode-html-languageservice: 5.6.2
+      vscode-uri: 3.2.0
+    optionalDependencies:
+      prettier: 3.9.10
+      prettier-plugin-astro: 0.14.1
+    transitivePeerDependencies:
+      - '@emnapi/runtime'
+      - typescript
+
+  '@astrojs/language-server@2.17.3(@emnapi/runtime@1.11.3)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@6.0.3)':
+    dependencies:
+      '@astrojs/astro2tsx': 0.1.2(@emnapi/runtime@1.11.3)
       '@astrojs/yaml2ts': 0.2.4
       '@volar/kit': 2.4.28(typescript@6.0.3)
       '@volar/language-core': 2.4.28
@@ -5940,11 +6024,11 @@ snapshots:
   '@emnapi/runtime@1.11.3':
     dependencies:
       tslib: 2.8.1
-    optional: true
 
   '@emnapi/runtime@2.0.0-beta.2':
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   '@emnapi/wasi-threads@1.2.2':
     dependencies:
@@ -6205,10 +6289,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@2.0.0-beta.2)':
+  '@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)':
     dependencies:
       '@emnapi/core': 1.11.3
-      '@emnapi/runtime': 2.0.0-beta.2
+      '@emnapi/runtime': 1.11.3
       '@tybys/wasm-util': 0.10.4
 
   '@napi-rs/wasm-runtime@1.2.6(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2)':

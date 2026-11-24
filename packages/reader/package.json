@@ -9,7 +9,10 @@
     "./search": "./src/search.ts",
     "./search-index": "./src/search-index.ts",
     "./calendar": "./src/calendar.ts",
-    "./plugins/*": "./src/plugins/*.ts"
+    "./plugins/*": "./src/plugins/*.ts",
+    "./routes": "./src/routes.ts",
+    "./interface": "./src/interface.ts",
+    "./components/*": "./src/components/*.astro"
   },
   "peerDependencies": {
     "astro": "catalog:"

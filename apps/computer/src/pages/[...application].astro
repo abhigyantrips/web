@@ -1,4 +1,5 @@
 ---
+import InterfaceChoices from "@abhi/reader/components/interface-choices";
 import { isPublished } from "@abhi/reader/publication";
 import ComputerLayout from "@/layouts/computer-layout.astro";
 import { getContentPages } from "@/lib/content-pages";
@@ -54,7 +55,7 @@ const Content =
 			<div class="p-8">
 				<>
 					<h1>Settings</h1>
-					<p>Wallpaper settings will live here.</p>
+					<InterfaceChoices interface="computer" />
 				</>
 			</div>
 		) : app === "weeknotes" && !entry ? (

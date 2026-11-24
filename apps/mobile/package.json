@@ -1,0 +1,33 @@
+{
+  "name": "abhi-mobile",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "generate-types": "wrangler types"
+  },
+  "dependencies": {
+    "astro": "catalog:",
+    "@astrojs/cloudflare": "catalog:",
+    "@astrojs/markdown-satteri": "catalog:",
+    "@astrojs/mdx": "catalog:",
+    "@astrojs/sitemap": "catalog:",
+    "@tailwindcss/vite": "catalog:",
+    "tailwindcss": "catalog:",
+    "wrangler": "catalog:",
+    "@abhi/reader": "workspace:*",
+    "satteri-autolink-paragraphs": "^0.3.0",
+    "satteri-figure": "^0.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,5 +1,6 @@
 ---
 import { Font } from "astro:assets";
+import InterfaceHead from "@abhi/reader/components/interface-head";
 
 interface Props {
 	title?: string;
@@ -25,6 +26,7 @@ const imageURL = new URL(image, Astro.site);
 <meta charset="utf-8" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<InterfaceHead interface="computer" />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Font Imports -->

@@ -1,0 +1,30 @@
+---
+import {
+	INTERFACE_MIN_WIDTH,
+	INTERFACE_REDIRECTS_ENABLED,
+	INTERFACE_ORIGINS,
+	interfaceDestination,
+	installInterfaceNavigation,
+	type ReaderInterface,
+} from "../interface";
+import { getInterfacePaths } from "../routes";
+interface Props {
+	interface: ReaderInterface;
+}
+const computer = import.meta.env.PUBLIC_READER_COMPUTER_ORIGIN;
+const mobile = import.meta.env.PUBLIC_READER_MOBILE_ORIGIN;
+const localOrigins =
+	computer && mobile
+		? { computer: new URL(computer).origin, mobile: new URL(mobile).origin }
+		: undefined;
+const config = {
+	localOrigins,
+	current: Astro.props.interface,
+	enabled: INTERFACE_REDIRECTS_ENABLED,
+	origins: INTERFACE_ORIGINS,
+	paths: await getInterfacePaths(),
+};
+const script = `(${installInterfaceNavigation.toString()})(${JSON.stringify(config).replace(/</g, "\\u003c")},${INTERFACE_MIN_WIDTH},${interfaceDestination.toString()});`;
+---
+
+<script is:inline data-astro-rerun set:html={script} />

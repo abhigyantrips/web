@@ -1,0 +1,151 @@
+---
+import { getCollection } from "astro:content";
+import {
+	calendarMonths,
+	dateKey,
+	monthDate,
+	monthKey,
+	monthWeeks,
+	weekSegment,
+} from "@abhi/reader/calendar";
+const notes = await getCollection("weeknotes");
+const events = await getCollection("events");
+const entries = [
+	...notes.map((note) => ({
+		title: note.data.title,
+		from: note.data.fromDate,
+		to: note.data.toDate,
+		href: `/weeknotes/${note.id}/`,
+		kind: "Weeknote",
+	})),
+	...events.map((event) => ({
+		title: event.data.name,
+		from: event.data.fromDate,
+		to: event.data.toDate,
+		href: event.data.link,
+		kind: "Event",
+	})),
+].sort((a, b) => a.from.getTime() - b.from.getTime());
+const months = entries.length
+	? calendarMonths(
+			entries[0].from,
+			new Date(Math.max(...entries.map((e) => e.to.getTime())))
+		).reverse()
+	: [];
+---
+
+<p class="metadata">Weeknotes and attended events. Open a month to explore.</p>
+{
+	months.map((month, index) => (
+		<details class="calendar-month" open={index === 0}>
+			<summary>
+				{monthDate(month).toLocaleDateString("en-GB", {
+					month: "long",
+					year: "numeric",
+					timeZone: "UTC",
+				})}
+			</summary>
+			<div class="calendar-grid" aria-hidden="true">
+				{["S", "M", "T", "W", "T", "F", "S"].map((day) => (
+					<span class="weekday">{day}</span>
+				))}
+			</div>
+			{monthWeeks(month).map((week) => (
+				<div class="calendar-week">
+					<div class="calendar-grid">
+						{week.map((day) => (
+							<span class:list={["calendar-day", { outside: monthKey(day) !== month }]}>
+								<time datetime={dateKey(day)}>{day.getUTCDate()}</time>
+							</span>
+						))}
+					</div>
+					{entries.map((entry) => {
+						const segment = weekSegment(week, entry.from, entry.to);
+						return (
+							segment && (
+								<div class="calendar-grid">
+									<a
+										class:list={["calendar-segment", { event: entry.kind === "Event" }]}
+										style={`grid-column: ${segment.column} / span ${segment.span}`}
+										href={entry.href}
+										aria-label={`${entry.kind}: ${entry.title}, ${dateKey(entry.from)} to ${dateKey(entry.to)}`}
+									>
+										{entry.title}
+									</a>
+								</div>
+							)
+						);
+					})}
+				</div>
+			))}
+			<ul class="entry-list">
+				{entries
+					.filter((entry) => monthKey(entry.from) <= month && monthKey(entry.to) >= month)
+					.map((entry) => (
+						<li>
+							<a href={entry.href}>
+								<span class="metadata">
+									{entry.kind} · {dateKey(entry.from)} — {dateKey(entry.to)}
+								</span>
+								<h2>{entry.title}</h2>
+							</a>
+						</li>
+					))}
+			</ul>
+		</details>
+	))
+}
+{!months.length && <p>No calendar entries yet.</p>}
+<style>
+	.calendar-month {
+		border-top: 1px solid var(--line);
+		margin-block: 1rem;
+	}
+	summary {
+		padding: 1rem 0;
+		font-size: 1.2rem;
+		min-height: 48px;
+	}
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+		gap: 2px;
+	}
+	.weekday {
+		text-align: center;
+		color: var(--muted);
+		font-size: 0.8rem;
+	}
+	.calendar-week {
+		border-top: 1px solid var(--line);
+		padding-bottom: 0.35rem;
+	}
+	.calendar-day {
+		padding: 0.3rem;
+		text-align: center;
+		font-size: 0.8rem;
+		font-variant-numeric: tabular-nums;
+	}
+	.outside {
+		opacity: 0.4;
+	}
+	.calendar-segment {
+		background: #e7ecd9;
+		color: #30392f;
+		padding: 0.25rem;
+		margin-block: 1px;
+		border-left: 2px solid #617347;
+		border-radius: 0.2rem;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		font-size: 0.75rem;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+	.calendar-segment.event {
+		background: #f3e2ca;
+		border-color: #a23f2d;
+	}
+</style>

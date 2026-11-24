@@ -36,6 +36,12 @@
       }
     },
     {
+      "files": ["apps/mobile/**/*"],
+      "options": {
+        "tailwindStylesheet": "./apps/mobile/src/styles/global.css"
+      }
+    },
+    {
       "files": ["apps/chhotu/**/*"],
       "options": {
         "tailwindStylesheet": "./apps/chhotu/src/styles/global.css"

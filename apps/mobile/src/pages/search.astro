@@ -1,0 +1,74 @@
+---
+import MobileLayout from "../layouts/mobile-layout.astro";
+---
+
+<MobileLayout title="Search">
+	<h1>Find a little something.</h1>
+	<label for="search"
+		>Search writing and apps<input
+			class="search-field"
+			id="search"
+			type="search"
+			placeholder="A title, topic, or app…"
+			autocomplete="off"
+		/></label
+	>
+	<p class="metadata" role="status" id="search-status">
+		Search titles, descriptions, and applications.
+	</p>
+	<ul class="entry-list" id="search-results"></ul>
+	<noscript
+		>Search needs JavaScript. You can browse every application from <a href="/">All apps</a
+		>.</noscript
+	>
+</MobileLayout>
+<script>
+	import { searchEntries, type SearchEntry } from "@abhi/reader/search";
+	let cached: Promise<SearchEntry[]> | undefined;
+	function setup() {
+		const input = document.querySelector<HTMLInputElement>("#search");
+		const results = document.querySelector<HTMLUListElement>("#search-results");
+		const status = document.querySelector<HTMLElement>("#search-status");
+		if (!input || !results || !status) return;
+		let revision = 0;
+		input.addEventListener("input", async () => {
+			const current = ++revision;
+			const query = input.value;
+			results.replaceChildren();
+			if (!query.trim()) {
+				status.textContent = "Search titles, descriptions, and applications.";
+				return;
+			}
+			status.textContent = "Searching…";
+			try {
+				cached ??= fetch("/search-index.json").then((response) => {
+					if (!response.ok) throw new Error("Search unavailable");
+					return response.json();
+				});
+				const records = await cached;
+				if (current !== revision) return;
+				const matches = searchEntries(records, query).slice(0, 40);
+				status.textContent = matches.length
+					? `${matches.length} results`
+					: "No matches. Try another word.";
+				for (const entry of matches) {
+					const li = document.createElement("li");
+					const link = document.createElement("a");
+					const title = document.createElement("h2");
+					const description = document.createElement("p");
+					title.textContent = entry.title;
+					description.textContent = entry.description;
+					link.href = entry.url;
+					link.append(title, description);
+					li.append(link);
+					results.append(li);
+				}
+			} catch {
+				cached = undefined;
+				if (current === revision)
+					status.textContent = "Search couldn’t load. Type again to retry, or browse All apps.";
+			}
+		});
+	}
+	document.addEventListener("astro:page-load", setup);
+</script>

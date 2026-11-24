@@ -1,12 +1,13 @@
 # abhi.now workspace
 
-This repository owns Now, Computer, Chhotu, and their shared source content. Now's
+This repository owns Now, Computer, Mobile, Chhotu, and their shared source content. Now's
 existing Git history is retained; the other applications were imported as source
 snapshots. The sibling repositories have not been changed.
 
 ```text
 apps/now/       abhi.now — canonical public writing, feeds, sitemap
 apps/computer/  abhi.computer — desktop and native content windows
+apps/mobile/    abhi.mobile — touch-oriented sibling reader
 apps/chhotu/    chhotu.abhi.now — authenticated publishing Worker and PWA
 content/        shared Markdown/MDX, images, schemas, loaders, authored components
 packages/reader/  shared reader utilities and local Sätteri plugins
@@ -23,10 +24,11 @@ relevant application's ignored `.env` / `.dev.vars` files.
 | -------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `pnpm dev:now`                                                 | Now on port 4321                                                  |
 | `pnpm dev:computer`                                            | Computer on port 4322                                             |
+| `pnpm dev:mobile`                                              | Mobile on port 4324                                               |
 | `pnpm dev:chhotu`                                              | Chhotu on port 4323; configure its local OAuth origin accordingly |
-| `pnpm build`                                                   | Build all three apps independently                                |
+| `pnpm build`                                                   | Build all four apps independently                                 |
 | `pnpm build:now` / `pnpm build:computer` / `pnpm build:chhotu` | Build one app                                                     |
-| `pnpm check`                                                   | Diagnostics for all three apps                                    |
+| `pnpm check`                                                   | Diagnostics for all four apps                                     |
 | `pnpm format` / `pnpm format:check`                            | Write / check Prettier formatting                                 |
 
 Chhotu's background development-server instructions are in
@@ -35,8 +37,8 @@ separate port; its app-local `pnpm dev` retains the normal Astro default.
 
 ## Content and rendering
 
-Now and Computer load the same local collection definitions from
-`content/collections.ts`. Both public Blog selections exclude unpublished posts.
+Now, Computer, and Mobile load the same local collection definitions from
+`content/collections.ts`. All public Blog selections exclude unpublished posts.
 Computer's existing collections remain under `content/computer/`; adding them to
 Now's public routes is a future editorial decision. Authored image paths stay
 relative to their Markdown files. Whoami's responsive components and assets live
@@ -45,7 +47,7 @@ article contains its own torn-paper generator. No shared content imports an app.
 Computer-specific collection definitions live in `content/computer/collections.ts`
 so another reader can opt into them without importing Computer's source.
 
-Computer generates article, weeknote, snippet collection, facet and project pages
+Computer generates article, weeknote, snippet collection, project, and About Me pages
 inside its desktop windows. It renders MDX and interactive components locally;
 its search index reads the same checkout, without fetching Now's deployed feeds.
 Its address and Open link still show the canonical public Now URL. Build-time
@@ -56,7 +58,7 @@ External media iframes authored in articles continue to work.
 
 Now's `/embed` variants, receiver, transformation middleware and embed cache are
 retired. Its normal pages, plaintext variants, feeds, sitemap and social cards
-remain. Both readers import their content assets directly and own their prose styles in
+remain. All readers import their content assets directly and own their prose styles in
 `src/styles/prose.css`. Computer has no dependency on Now's config, source, or
 public directory, and no HTML response-rewriting middleware.
 
@@ -79,12 +81,49 @@ additional collection manifest. No content queries run inside Markdown plugins.
 
 Run `pnpm test` for the shared reader and Computer state/motion tests.
 
-All three apps use Astro 7.4.11 and shared Astro integration and Tailwind versions
+All four apps use Astro 7.4.11 and shared Astro integration and Tailwind versions
 from the catalog in `pnpm-workspace.yaml`. Each app declares the packages it uses
 with `catalog:`; update their shared versions in the catalog and regenerate
 `pnpm-lock.yaml`. Astro belongs to the apps, not the workspace root.
 A filtered Computer install can use `pnpm --filter abhi-computer... install`;
 its workspace dependencies include `@abhi/reader`, without installing Now.
+
+Mobile scaffolding, viewport redirects, dependency ownership, and viewport styling
+boundaries follow [MOBILE.md](MOBILE.md). Mobile owns its configuration, assets,
+prose, and touch shell; it imports no Computer application source. Start it with
+`pnpm dev:mobile` (port 4324), build with `pnpm build:mobile`, and run diagnostics
+with `pnpm check:mobile`. Aggregate build/check commands include it.
+
+Mobile serves `/blog/`, `/weeknotes/`, `/projects/`, `/snippets/` (including folders
+and collection timelines), `/journal/`, `/things/`, `/links/`, `/tech/:id/`,
+`/fields/:id/`, `/whoami/`, `/settings/`, `/colophon/`, and `/search/`. Each public
+article has the same path as Computer. `/desktop/` maps to `/`; `/credits/` maps
+to `/colophon/`. Computer's icon study stays Computer-only; Mobile's Search stays
+Mobile-only. Unknown routes never trigger an interface redirect. Individual snippet
+search is deferred. Shared Whoami facet links, RSS feeds, and other Now-only
+resources retain canonical Now destinations. About Me is registered in Computer too.
+
+The shared head helper uses `matchMedia('(min-width: 768px)')`: narrower viewports
+select Mobile and larger viewports select Computer. **Production automatic
+redirects are disabled** by `INTERFACE_REDIRECTS_ENABLED` in
+`packages/reader/src/interface.ts`. Deploy and validate Mobile first, then enable
+that single switch in both builds; roll back that switch independently. Existing
+Computer small-screen rules remain until rollout. Neither Now nor Chhotu uses
+this helper.
+
+Settings in each reader provides Use Computer, Use Mobile, and Automatic choices.
+Explicit choices travel as `?interface=computer` / `?interface=mobile`; per-origin
+session storage and internal links retain the selection. Automatic clears the
+selection. Redirects use `location.replace()` and preserve queries and fragments.
+They run before the shell paints and on Astro navigation, with no resize listener.
+Local and preview hosts do not automatically redirect. To test a local pair,
+set both `PUBLIC_READER_COMPUTER_ORIGIN=http://localhost:4322` and
+`PUBLIC_READER_MOBILE_ORIGIN=http://localhost:4324` when starting/building each
+reader. Never set those local testing variables in production.
+
+The root pins `@emnapi/runtime` to 1.11.3 for Astro's checker: its installed WASM
+bridge requires that stable peer, while automatic peer resolution selected an
+incompatible 2.0 beta.
 
 ## Cloudflare rollout
 
@@ -135,7 +174,7 @@ A successful commit continues to be reported separately from deployment success.
 
 ## Formatting
 
-Prettier remains the formatter for the three Astro apps, with their existing
+Prettier remains the formatter for the four Astro apps, with their existing
 Astro, TypeScript import-organizer and Tailwind plugins. Tailwind sorting uses each
 app's stylesheet. Shared authored content, public assets and generated outputs are excluded from
 bulk formatting. Oxfmt delegates Astro/MDX to
@@ -148,3 +187,24 @@ Its portable source is now `scripts/pre-commit`. On a fresh checkout install it
 with `mkdir -p .hooks && cp scripts/pre-commit .hooks/pre-commit && chmod +x .hooks/pre-commit`
 and `git config core.hooksPath .hooks`. It preserves ICC profiles and orientation
 while removing other EXIF data before staging images.
+
+### Mobile deployment
+
+Mobile's independent Worker configuration is in `apps/mobile/wrangler.jsonc`:
+Worker `abhi-mobile`, custom domain `abhi.mobile`, root directory `apps/mobile`.
+Use this Cloudflare build command:
+
+```sh
+pnpm --dir ../.. --filter "abhi-mobile..." install --frozen-lockfile && pnpm build
+```
+
+Deploy with `pnpm exec wrangler deploy`. Configure `SKIP_DEPENDENCY_INSTALL=true`,
+`NODE_VERSION=24`, and the root-pinned pnpm version. Watch `apps/mobile/**`,
+`content/**`, `packages/reader/**`, `package.json`, `pnpm-lock.yaml`, and
+`pnpm-workspace.yaml`. Keep Computer and Now's filtered builds independent of
+Mobile. The Worker/domain and hosted build settings must be configured in
+Cloudflare during rollout; repository scaffolding does not change those settings.
+
+Before activation, validate the live Mobile origin and both interface directions
+at 767px and 768px, deep links, explicit choices, Astro navigation, history,
+resize/keyboard behavior, preview/local defaults, and JavaScript-disabled pages.
