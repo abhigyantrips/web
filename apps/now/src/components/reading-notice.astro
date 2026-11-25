@@ -1,0 +1,14 @@
+---
+import { MDX_READING_NOTICE } from "@now/consts";
+---
+
+<blockquote>
+	<p>{MDX_READING_NOTICE}</p>
+</blockquote>
+
+<style>
+	/* Article extractors can retain the notice when they discard page styles. */
+	blockquote {
+		display: none;
+	}
+</style>

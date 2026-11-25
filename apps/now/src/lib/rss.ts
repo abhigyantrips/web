@@ -1,3 +1,4 @@
+import { MDX_READING_NOTICE } from "@now/consts";
 import { renderEntryHtml } from "@now/lib/content-html";
 import type { CollectionEntry, CollectionKey } from "astro:content";
 
@@ -26,7 +27,7 @@ export async function renderEntryContent<C extends CollectionKey>(
 	const notice =
 		(entry.collection === "blog" || entry.collection === "weeknotes") &&
 		entry.filePath?.endsWith(".mdx")
-			? "<blockquote><p>This post may contain custom HTML and scripts, which could be blocked when reading on an RSS reader. For the best experience, it is recommended to read on the website directly. Thanks!</p></blockquote>\n"
+			? `<blockquote><p>${MDX_READING_NOTICE}</p></blockquote>\n`
 			: "";
 
 	return notice + absolutize(html, site);

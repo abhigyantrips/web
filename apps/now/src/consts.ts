@@ -1,5 +1,8 @@
 import type { Route, Site, Social } from "@now/types";
 
+export const MDX_READING_NOTICE =
+	"This post may contain custom HTML and scripts, which could be blocked when reading on an RSS reader. For the best experience, it is recommended to read on the website directly. Thanks!";
+
 export const SITE: Site = {
 	TITLE: "abhigyan trips.",
 	DESCRIPTION: "working towards a more distraction-free internet.",

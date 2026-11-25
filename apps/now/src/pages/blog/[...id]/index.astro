@@ -5,6 +5,7 @@ import { formatBlogDate, formatReadingTime } from "@abhi/reader/utils";
 import { extractOpeningHtml } from "@now/lib/blog-preview";
 import { renderEntryHtml } from "@now/lib/content-html";
 import { renderCard } from "astro-cards/runtime";
+import ReadingNotice from "@now/components/reading-notice.astro";
 import ReadingLayout from "@now/layouts/reading-layout.astro";
 
 export async function getStaticPaths() {
@@ -62,6 +63,7 @@ const image = await renderCard("blog", {
 	}}
 >
 	<article class="e-content prose-content">
+		{post.filePath?.endsWith(".mdx") && <ReadingNotice />}
 		<Content />
 		<div class="not-prose flex items-center justify-start gap-2 font-gummy tracking-wider">
 			{

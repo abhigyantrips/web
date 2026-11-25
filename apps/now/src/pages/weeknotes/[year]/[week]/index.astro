@@ -5,6 +5,7 @@ import { getMonthColor } from "@now/lib/month-colors";
 import { extractFirstImage, formatWeeknoteDateRange } from "@now/lib/weeknote-preview";
 import { renderEntryHtml } from "@now/lib/content-html";
 import { renderCard } from "astro-cards/runtime";
+import ReadingNotice from "@now/components/reading-notice.astro";
 import WeeknoteLayout from "@now/layouts/weeknote-layout.astro";
 
 export async function getStaticPaths() {
@@ -54,6 +55,7 @@ const image = await (async () => {
 	image={image}
 >
 	<article class="e-content prose-content">
+		{note.filePath?.endsWith(".mdx") && <ReadingNotice />}
 		<Content />
 	</article>
 </WeeknoteLayout>
